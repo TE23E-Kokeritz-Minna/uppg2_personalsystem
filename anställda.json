@@ -1,0 +1,22 @@
+[
+  { "typ": "Programmerare", "namn": "Ada Lovelace", "personnummer": 181512101234, "lon": 75000, "avdelning": "R&D", "programSprak": "Java" },
+  { "typ": "Programmerare", "namn": "Alan Turing", "personnummer": 191206231111, "lon": 72000, "avdelning": "R&D", "programSprak": "Python" },
+  { "typ": "Programmerare", "namn": "Grace Hopper", "personnummer": 190612092222, "lon": 68000, "avdelning": "Backend", "programSprak": "COBOL" },
+  { "typ": "Programmerare", "namn": "Linus Torvalds", "personnummer": 196912283333, "lon": 70000, "avdelning": "Kernel", "programSprak": "C" },
+  { "typ": "Programmerare", "namn": "Margaret Hamilton", "personnummer": 193608174444, "lon": 74000, "avdelning": "Apollo", "programSprak": "Assembly" },
+  { "typ": "Programmerare", "namn": "James Gosling", "personnummer": 195505195555, "lon": 65000, "avdelning": "Backend", "programSprak": "Java" },
+  { "typ": "Programmerare", "namn": "Guido van Rossum", "personnummer": 195601316666, "lon": 62000, "avdelning": "Scripting", "programSprak": "Python" },
+  { "typ": "Programmerare", "namn": "Bjarne Stroustrup", "personnummer": 195012307777, "lon": 67000, "avdelning": "Systems", "programSprak": "C++" },
+  { "typ": "Programmerare", "namn": "Anders Hejlsberg", "personnummer": 196012028888, "lon": 66000, "avdelning": "Frontend", "programSprak": "C#" },
+  { "typ": "Programmerare", "namn": "Barbara Liskov", "personnummer": 193911079999, "lon": 69000, "avdelning": "Architecture", "programSprak": "Java" },
+  { "typ": "Programmerare", "namn": "Ken Thompson", "personnummer": 194302041010, "lon": 61000, "avdelning": "Systems", "programSprak": "Go" },
+  { "typ": "Programmerare", "namn": "Dennis Ritchie", "personnummer": 194109092020, "lon": 64000, "avdelning": "Systems", "programSprak": "C" },
+  { "typ": "Programmerare", "namn": "John Backus", "personnummer": 192412033030, "lon": 58000, "avdelning": "Scientific", "programSprak": "Fortran" },
+  { "typ": "Programmerare", "namn": "Donald Knuth", "personnummer": 193801104040, "lon": 60000, "avdelning": "Algorithms", "programSprak": "Pascal" },
+  { "typ": "Programmerare", "namn": "Richard Stallman", "personnummer": 195303165050, "lon": 45000, "avdelning": "Free Software", "programSprak": "Lisp" },
+  { "typ": "Projektledare", "namn": "Steve Jobs", "personnummer": 195502246060, "lon": 85000, "avdelning": "Management", "antalProjekt": 12 },
+  { "typ": "Projektledare", "namn": "Bill Gates", "personnummer": 195510287070, "lon": 82000, "avdelning": "Management", "antalProjekt": 10 },
+  { "typ": "Projektledare", "namn": "Sheryl Sandberg", "personnummer": 196908288080, "lon": 78000, "avdelning": "Operations", "antalProjekt": 5 },
+  { "typ": "Projektledare", "namn": "Jeff Bezos", "personnummer": 196401129090, "lon": 88000, "avdelning": "Logistics", "antalProjekt": 15 },
+  { "typ": "Projektledare", "namn": "Satya Nadella", "personnummer": 196708190101, "lon": 81000, "avdelning": "Cloud", "antalProjekt": 8 }
+]
