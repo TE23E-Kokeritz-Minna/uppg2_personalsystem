@@ -10,7 +10,5 @@ public class Programmerare extends Personal{
 
     public String getProgramSprak() {
         return programSprak;
-    }
-    
-    
+    }    
 }

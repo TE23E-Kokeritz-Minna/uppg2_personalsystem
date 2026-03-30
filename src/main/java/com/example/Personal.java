@@ -1,6 +1,8 @@
 package com.example;
 
-public abstract class Personal {
+import java.util.Objects;
+
+public abstract class Personal implements Comparable{
     protected String typ;
     protected String namn;
     protected long personnummer;
@@ -33,6 +35,34 @@ public abstract class Personal {
 
     public String getAvdelning() {
         return avdelning;
+    }
+
+    @Override
+    public String toString() {
+        return namn + "\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Personal person = (Personal) o;
+        return personnummer == person.personnummer;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(personnummer);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Personal annan = (Personal)o;
+        
+        return namn.compareTo(annan.getNamn());
     }
 
 }
