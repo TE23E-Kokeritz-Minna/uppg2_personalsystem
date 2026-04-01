@@ -1,9 +1,9 @@
 package com.example;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,19 +16,30 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
 
+        // Sträng för json
         String strAnställda = "";
-        
+
+        // Läs in asntällda
         try {
             strAnställda = Files.readString(Paths.get("anställda.json"));
-        } catch (Exception e) {
-            IO.println("FEL med inlässningen: " + e.getMessage());
+        } catch (FileNotFoundException e) {
+            IO.println("FEL: filen hittades inte: " + e.getMessage());
+            return;
+        } catch (IOException e) {
+            IO.println("FEL med filen: " + e.getMessage());
             return;
         }
 
+        // Läser in till en Json Array
         JsonArray jsonLista = JsonParser.parseString(strAnställda).getAsJsonArray();
 
+        // Lista med alla anställda
         ArrayList<Personal> allaAnställda = new ArrayList<>();
+        // För kortare stream utryck
+        ArrayList<Programmerare> allaProg = new ArrayList<>();
+        ArrayList<Projektledare> allaProj = new ArrayList<>();
 
+        // Lägger till korrekt objekt från JSON filen i allaanstälda listan
         for (JsonElement element : jsonLista) {
             JsonObject obj = element.getAsJsonObject();
 
@@ -46,41 +57,56 @@ public class Main {
             }
         }
 
+        // Gör om till en HashSet för att ta bort dubletter
         HashSet<Personal> anställda = new HashSet<>(allaAnställda);
+
+        // Lägger till alla prog och proj i rätt lista
+        anställda.stream().filter(a -> a.getTyp().equals("Programmerare"))
+                .forEach(p -> allaProg.add((Programmerare) p));
+        anställda.stream().filter(a -> a.getTyp().equals("Projektledare"))
+                .forEach(p -> allaProj.add((Projektledare) p));
+
+        // -------------------- DATA ANALYS ------------------------ //
+
+        // Sorterar listan
         List<Personal> sortanställda = anställda.stream().sorted().toList();
-        long antalProg = anställda.stream().filter(a -> a.getTyp().equals("Programmerare")).count();
-        long antalProjled = anställda.stream().filter(a -> a.getTyp().equals("Projektledare")).count();
+
+        // räknar antal Prog och Proj
+        long antalProg = allaProg.stream().count();
+        long antalProjled = allaProj.stream().count();
+
+        // Filterar de fem som får mest lön
         List<Personal> toppList = anställda.stream().sorted((a1, a2) -> a2.getLon() - a1.getLon()).limit(5).toList()
                 .stream().sorted().toList(); // in alphabetiska ordning
+        // Tar deras summa på lön
         int summaToppList = toppList.stream().mapToInt(p -> p.getLon()).sum();
 
+        // Skriver ut alla anställda
         for (Personal p : sortanställda) {
             IO.println("> " + p.getNamn());
         }
+        // Skriver ut antal
         IO.println("\nANTAL Programmerare: " + antalProg);
         IO.println("ANTAL Projektledare: " + antalProjled + "\n");
 
+        // Skriver ut topplistan
         for (Personal p : toppList) {
             IO.println("> " + p.getNamn() + " lön: " + p.getLon());
         }
-
         IO.println("Summa toppLista: " + summaToppList);
 
         /// ------ EXTRA UPPGIFTER ---------------
 
+        // Räknar medel;n 
         double medellönAlla = anställda.stream().mapToInt(p -> p.getLon()).sum() / anställda.size();
-        double medellönProg = anställda.stream().filter(a -> a.getTyp().equals("Programmerare"))
-                .mapToInt(p -> p.getLon()).sum() / antalProg;
-        double medellönProj = anställda.stream().filter(a -> a.getTyp().equals("Projektledare"))
-                .mapToInt(p -> p.getLon()).sum() / antalProjled;
+        double medellönProg = allaProg.stream().mapToInt(p -> p.getLon()).sum() / antalProg;
+        double medellönProj = allaProj.stream().mapToInt(p -> p.getLon()).sum() / antalProjled;
 
         IO.println("--------------------");
         IO.println("MEDELLÖN: " + medellönAlla);
         IO.println("MEDELLÖN FÖR Programmerare: " + medellönProg);
         IO.println("MEDELLÖN FÖR Projektledare: " + medellönProj);
-        ArrayList<Programmerare> allaProg = new ArrayList<>();
-        anställda.stream().filter(a -> a.getTyp().equals("Programmerare"))
-                .forEach(p -> allaProg.add((Programmerare) p));
+
         Map<String, Long> sprakFreq = allaProg.stream()
                 .collect(Collectors.groupingBy(p -> p.getProgramSprak(), Collectors.counting()));
         sprakFreq.forEach((sprak, antal) -> IO.println(sprak + ": " + antal));
@@ -93,10 +119,8 @@ public class Main {
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed()).toList();
         sortLonAvd.forEach(p -> IO.println(p.getKey() + ", TOTAL KOSTNAD: " + p.getValue()));
 
-        ArrayList<Projektledare> allaProj = new ArrayList<>();
-        anställda.stream().filter(a -> a.getTyp().equals("Projektledare"))
-                .forEach(p -> allaProj.add((Projektledare) p));
-        Optional<Projektledare> högstBelasProjektledare = allaProj.stream().sorted((a1, a2) -> a2.getAntalProjekt() - a1.getAntalProjekt()).limit(1).findFirst();
+        Optional<Projektledare> högstBelasProjektledare = allaProj.stream()
+                .sorted((a1, a2) -> a2.getAntalProjekt() - a1.getAntalProjekt()).limit(1).findFirst();
         högstBelasProjektledare.ifPresent(p -> IO.println(p.getNamn() + " ANTAL PROJEKT: " + p.getAntalProjekt()));
     }
 }
