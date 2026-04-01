@@ -97,30 +97,41 @@ public class Main {
 
         /// ------ EXTRA UPPGIFTER ---------------
 
-        // Räknar medel;n 
+        // Räknar medellön för alla prog och proj
         double medellönAlla = anställda.stream().mapToInt(p -> p.getLon()).sum() / anställda.size();
         double medellönProg = allaProg.stream().mapToInt(p -> p.getLon()).sum() / antalProg;
         double medellönProj = allaProj.stream().mapToInt(p -> p.getLon()).sum() / antalProjled;
 
+        // skriver ut medellönen
         IO.println("--------------------");
         IO.println("MEDELLÖN: " + medellönAlla);
         IO.println("MEDELLÖN FÖR Programmerare: " + medellönProg);
         IO.println("MEDELLÖN FÖR Projektledare: " + medellönProj);
 
+        // Group språk och antal i en map
         Map<String, Long> sprakFreq = allaProg.stream()
-                .collect(Collectors.groupingBy(p -> p.getProgramSprak(), Collectors.counting()));
+                .collect(Collectors.groupingBy(Programmerare::getProgramSprak, Collectors.counting()));
+        // Syntax .collect(Collectors.groupingBy(kriteria, sammannlag vad samlas in)
+        // Kriteria kan skrivas som lambda utryck
+
+        // Skriver ut map
         sprakFreq.forEach((sprak, antal) -> IO.println(sprak + ": " + antal));
 
         IO.println();
 
+        // summa lön per avdelning
         Map<String, Long> lonAvdelning = anställda.stream()
                 .collect(Collectors.groupingBy(Personal::getAvdelning, Collectors.summingLong(Personal::getLon)));
+        // sortera och spara i en lista
         List<Map.Entry<String, Long>> sortLonAvd = lonAvdelning.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed()).toList();
+        // Skriver ut listan
         sortLonAvd.forEach(p -> IO.println(p.getKey() + ", TOTAL KOSTNAD: " + p.getValue()));
 
+        // hitta högst belastad proj genom en Optional objekts (Kanske inte finns)
         Optional<Projektledare> högstBelasProjektledare = allaProj.stream()
-                .sorted((a1, a2) -> a2.getAntalProjekt() - a1.getAntalProjekt()).limit(1).findFirst();
+                .sorted((a1, a2) -> a2.getAntalProjekt() - a1.getAntalProjekt()).findFirst();
+        // Skriver ut om den finns
         högstBelasProjektledare.ifPresent(p -> IO.println(p.getNamn() + " ANTAL PROJEKT: " + p.getAntalProjekt()));
     }
 }
