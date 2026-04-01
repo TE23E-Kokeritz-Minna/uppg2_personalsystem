@@ -8,10 +8,22 @@ public class Projektledare extends Personal{
         this.antalProjekt = antalProjekt;
     }
 
+    
+
+    public Projektledare() {
+    }
+
+
+
     public int getAntalProjekt() {
         return antalProjekt;
     }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        
+        return super.clone();
+    }
   
 
   

@@ -16,6 +16,11 @@ public abstract class Personal implements Comparable{
         this.lon = lon;
         this.avdelning = avdelning;
     }
+    
+
+    public Personal() {
+    }
+
 
     public String getTyp() {
         return typ;

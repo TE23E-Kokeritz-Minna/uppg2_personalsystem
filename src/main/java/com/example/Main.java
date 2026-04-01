@@ -7,18 +7,17 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
 
         String strAnställda = "";
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type typ = new TypeToken<ArrayList<Personal>>() {
-        }.getType();
-
+        
         try {
             strAnställda = Files.readString(Paths.get("anställda.json"));
         } catch (Exception e) {
@@ -49,14 +48,14 @@ public class Main {
 
         HashSet<Personal> anställda = new HashSet<>(allaAnställda);
         List<Personal> sortanställda = anställda.stream().sorted().toList();
-        long antalProg = anställda.stream().filter(a -> a.getTyp().equals("Projektledare")).count();
-        long antalProjled = anställda.stream().filter(a -> a.getTyp().equals("Programmerare")).count();
+        long antalProg = anställda.stream().filter(a -> a.getTyp().equals("Programmerare")).count();
+        long antalProjled = anställda.stream().filter(a -> a.getTyp().equals("Projektledare")).count();
         List<Personal> toppList = anställda.stream().sorted((a1, a2) -> a2.getLon() - a1.getLon()).limit(5).toList()
-                .stream().sorted().toList();            // in alphabetiska ordning
+                .stream().sorted().toList(); // in alphabetiska ordning
+        int summaToppList = toppList.stream().mapToInt(p -> p.getLon()).sum();
 
-        int summaToppList = toppList.stream().mapToInt(p -> p.getLon()).sum();        
         for (Personal p : sortanställda) {
-            IO.println("> " + p.getNamn() );
+            IO.println("> " + p.getNamn());
         }
         IO.println("\nANTAL Programmerare: " + antalProg);
         IO.println("ANTAL Projektledare: " + antalProjled + "\n");
@@ -66,5 +65,38 @@ public class Main {
         }
 
         IO.println("Summa toppLista: " + summaToppList);
+
+        /// ------ EXTRA UPPGIFTER ---------------
+
+        double medellönAlla = anställda.stream().mapToInt(p -> p.getLon()).sum() / anställda.size();
+        double medellönProg = anställda.stream().filter(a -> a.getTyp().equals("Programmerare"))
+                .mapToInt(p -> p.getLon()).sum() / antalProg;
+        double medellönProj = anställda.stream().filter(a -> a.getTyp().equals("Projektledare"))
+                .mapToInt(p -> p.getLon()).sum() / antalProjled;
+
+        IO.println("--------------------");
+        IO.println("MEDELLÖN: " + medellönAlla);
+        IO.println("MEDELLÖN FÖR Programmerare: " + medellönProg);
+        IO.println("MEDELLÖN FÖR Projektledare: " + medellönProj);
+        ArrayList<Programmerare> allaProg = new ArrayList<>();
+        anställda.stream().filter(a -> a.getTyp().equals("Programmerare"))
+                .forEach(p -> allaProg.add((Programmerare) p));
+        Map<String, Long> sprakFreq = allaProg.stream()
+                .collect(Collectors.groupingBy(p -> p.getProgramSprak(), Collectors.counting()));
+        sprakFreq.forEach((sprak, antal) -> IO.println(sprak + ": " + antal));
+
+        IO.println();
+
+        Map<String, Long> lonAvdelning = anställda.stream()
+                .collect(Collectors.groupingBy(Personal::getAvdelning, Collectors.summingLong(Personal::getLon)));
+        List<Map.Entry<String, Long>> sortLonAvd = lonAvdelning.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed()).toList();
+        sortLonAvd.forEach(p -> IO.println(p.getKey() + ", TOTAL KOSTNAD: " + p.getValue()));
+
+        ArrayList<Projektledare> allaProj = new ArrayList<>();
+        anställda.stream().filter(a -> a.getTyp().equals("Projektledare"))
+                .forEach(p -> allaProj.add((Projektledare) p));
+        Optional<Projektledare> högstBelasProjektledare = allaProj.stream().sorted((a1, a2) -> a2.getAntalProjekt() - a1.getAntalProjekt()).limit(1).findFirst();
+        högstBelasProjektledare.ifPresent(p -> IO.println(p.getNamn() + " ANTAL PROJEKT: " + p.getAntalProjekt()));
     }
 }
